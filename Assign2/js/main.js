@@ -81,9 +81,10 @@ $(document).ready(function(){ // start jQuery
     {
         console.log("main.js:::getFilteredEmployeesModel()");              
         let filterData = _.filter(employeesModel, function(employee) {
-            if(employee.FirstName.indexOf(filterString) != -1 || 
-                employee.LastName.indexOf(filterString) != -1 || 
-                employee.Position.PositionName.indexOf(filterString) != -1)
+            // This operation is not case sensitive 
+            if(employee.FirstName.toUpperCase().indexOf(filterString.toUpperCase()) != -1 || 
+                employee.LastName.toUpperCase().indexOf(filterString.toUpperCase()) != -1 || 
+                employee.Position.PositionName.toUpperCase().indexOf(filterString.toUpperCase()) != -1)
             {
                 return true;
             }
