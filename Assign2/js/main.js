@@ -4,7 +4,7 @@
 *   No part of this assignment has been copied manually or electronically from any other source 
 *  (including web sites) or distributed to other students. 
 *  
-*	Name: _Jongkuk Lee_________ Student ID: _127730158____ Date: _2017-09-22_____ 
+*	Name: _Jongkuk Lee_________ Student ID: _127730158____ Date: _2017-09-25_____ 
 * 
 * 
 ********************************************************************************/  
@@ -59,10 +59,16 @@ $(document).ready(function(){ // start jQuery
     // show	generic modal using	id
     function showGenericModal(title, message)
     {
-        console.log("main.js:::showGenericModal()");        
-        $(".modal-title h4").text(title);
-        $(".modal-body p").text(message);        
-        $("#genericModal").modal();
+        console.log("main.js:::showGenericModal()" + title);
+        console.log("main.js:::showGenericModal()" + message);
+        $("#genericModal").modal ({
+            backdrop: 'static', // disable clicking on the backdrop to close
+            keyboard: false, // disable using the keyboard to close
+        });
+        $("#myModalTitle").empty();
+        $("#myModalMessage").empty();
+        $("#myModalTitle").text(title);
+        $("#myModalMessage").html(message);
     }
     // Defines a Lodash template
     // Invoke the template function
@@ -139,17 +145,11 @@ $(document).ready(function(){ // start jQuery
             '<strong>Address:</strong> <%- employee.AddressStreet %> <%- employee.AddressCity %> <%- employee.AddressState %> <%- employee.AddressZip %><br>' +
             '<strong>Phone Number:</strong> <%-employee.PhoneNum %><br>' + 
             '<strong>Hire Date:</strong> <%- employee.HireDate %>');
-
-        $("#genericModal").modal ({
-            backdrop: 'static', // disable clicking on the backdrop to close
-            keyboard: false, // disable using the keyboard to close
-        });
-        $("#myModalTitle").empty();
-        $("#myModalMessage").empty();
-        $("#myModalTitle").text(
-            clickedEmpoyee.FirstName + " " + clickedEmpoyee.LastName);
-
-        console.log(modalTemplate({ 'employee':clickedEmpoyee }));
-        $("#myModalMessage").html(modalTemplate({ 'employee':clickedEmpoyee }));
+        
+        // show employee detail 
+        showGenericModal(
+            clickedEmpoyee.FirstName + " " + clickedEmpoyee.LastName, 
+            modalTemplate({ 'employee':clickedEmpoyee })
+        );
     });
 });
