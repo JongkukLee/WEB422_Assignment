@@ -36,50 +36,47 @@
    
     <div class="container">
         <div class="row">
-            <div class="col-md-4">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <strong>[ Team Name ]</strong>
-                        <button class = "btn btn-primary btnxs pull-right">Save</button>
-                    </div>
-                    <div class="panel-body">
-                            <!-- •	<h5> element with the text "Team Lead" 
-                                    •	<select> element with the class "single" 
-                                    •	<h5> element with the text "Team Members" 
-                                    •	<select multiple> element with the class "multiple" 
-                                    •	<h5> element with the text "Projects" 
-                                    •	<select multiple> element with the class "multiple"  -->
-                        <h5>Team Lead</h5>
-                        <select class="single"></select>
-                        <h5>Team Member</h5>
-                        <select class="multiple"></select>
-                        <h5>Project</h5>
-                        <select class="multiple"></select>            
-                        
+            <div style="display: none;" data-bind="visible:true, foreach: teams" >
+                <div class="col-md-4">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <strong data-bind="text: TeamName"></strong>
+                            <button class = "btn btn-primary btnxs pull-right" data-bind="click:saveTeam">Save</button>
+                        </div>
+                        <div class="panel-body">
+                                <!-- •	<h5> element with the text "Team Lead" 
+                                        •	<select> element with the class "single" 
+                                        •	<h5> element with the text "Team Members" 
+                                        •	<select multiple> element with the class "multiple" 
+                                        •	<h5> element with the text "Projects" 
+                                        •	<select multiple> element with the class "multiple"  -->
+                            <h5>Team Lead</h5>
+                            <select class="single" 
+                                data-bind="
+                                value:TeamLead, 
+                                options:$parent.employees, 
+                                optionsText:function(item) { return ko.unwrap(item.FirstName) + ' ' + ko.unwrap(item.LastName) }, 
+                                optionsValue:function(item) { return item._id }">
+                            </select>
+                            <h5>Team Member</h5>
+                            <select multiple class="multiple" 
+                                data-bind=" 
+                                options:$parent.employees,
+                                selectedOptions:Employees,                                
+                                optionsText:function(item) { return ko.unwrap(item.FirstName) + ' ' + ko.unwrap(item.LastName) }, 
+                                optionsValue:function(item) { return item._id } ">
+                            </select>
+                            <h5>Project</h5>
+                            <select multiple class="multiple" 
+                                data-bind="
+                                options:$parent.projects,                                
+                                selectedOptions:Projects, 
+                                optionsText:function(item) { return item.ProjectName }, 
+                                optionsValue:function(item) { return item._id } ">
+                            </select>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-4">
-                <div class="panel panel-default">                
-                    <div class="panel-heading">
-                        <strong>[ Team Name ]</strong>
-                        <button class = "btn btn-primary btnxs pull-right">Save</button>
-                    </div>
-                    <div class="panel-body">
-                        [ Team Info ]
-                    </div>
-                </div>                
-            </div>
-            <div class="col-md-4">
-                <div class="panel panel-default">                
-                    <div class="panel-heading">
-                        <strong>[ Team Name ]</strong>
-                        <button class = "btn btn-primary btnxs pull-right">Save</button>
-                    </div>
-                    <div class="panel-body">
-                        [ Team Info ]
-                    </div>           
-                </div>         
             </div>
         </div>
     </div>

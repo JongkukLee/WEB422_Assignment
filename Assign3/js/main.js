@@ -11,58 +11,10 @@
 const urlString = "https://agile-retreat-67872.herokuapp.com/";
 
 var viewModel = {
-
-
+    teams:ko.observableArray([]),
+    employees:ko.observableArray([]),
+    projects:ko.observableArray([])    
 };
-
-
-
-
-$(document).ready(function(){ // start jQuery
-
-    // view	model"	for	our	current	"Employees"	view
-    let employeesModel; 
-
-    // Defines a Lodash template to show data on the screen
-    let rowTemplate = _.template(
-        '<% _.forEach(employees, function(employee) { %>' +
-            '<div class="row body-row" data-id=<%- employee._id %>>' + 
-                '<div class="col-xs-4 body-column"><%- employee.FirstName %></div>' + 
-                '<div class="col-xs-4 body-column"><%- employee.LastName %></div>' + 
-                '<div class="col-xs-4 body-column"><%- employee.Position.PositionName %></div>' + 
-            '</div>' +
-        '<% }); %>');
-
-    // populate	the	"employeesModel" array,	
-    // by issuing an AJAX call to your Teams API
-    function initializeEmployeesModel()
-    {
-        console.log("main.js:::initializeEmployeesModel()");
-
-        // request data to REST server with jQuery-ajax
-        $.ajax({
-            // according to data-query type, request data to REST
-            url: urlString + "employees",
-            method: "GET",
-            contentType: "application/json"
-        })
-        .done(function(data) {
-            // Assign the results to the "employeesModel" variable, 
-            // causing it to be populated with all 300 Employees returned from your API
-            employeesModel = _.take(data, 300);
-
-            // Invoke the "refreshEmployeeRows" function (see below for specification) 
-            // with the employeesModel as the parameter
-            refreshEmployeeRows(employeesModel);
-        })
-        .fail(function(err){
-            // If the AJAX call fails, Invoke the "showGenericModal" 
-            // function (see below for specification) with "Error" 
-            // as the "title" parameter and an appropriate error message
-            console.log("error: " + err.statusText);                
-            showGenericModal('Error', 'Unable to get Employees');
-        });
-    }
 
     // show	generic modal using	id
     function showGenericModal(title, message)
@@ -78,86 +30,142 @@ $(document).ready(function(){ // start jQuery
         $("#myModalTitle").text(title);
         $("#myModalMessage").html(message);
     }
-    // Defines a Lodash template
-    // Invoke the template function
-    // Add the results from invoking the template function
-    function refreshEmployeeRows(employees)
-    {
-        console.log("main.js:::refreshEmployeeRows()");         
-        let rows = rowTemplate({ 'employees': employees});
-        let employeeTable = $("#employees-table");
-        employeeTable.empty();
-        employeeTable.append(rows);
-    }
 
-    // Returns a filtered version of the "employeesModel" array
-    function getFilteredEmployeesModel(filterString)
-    {
-        console.log("main.js:::getFilteredEmployeesModel()");              
-        let filterData = _.filter(employeesModel, function(employee) {
-            // This operation is not case sensitive 
-            if(employee.FirstName.toUpperCase().indexOf(filterString.toUpperCase()) != -1 || 
-                employee.LastName.toUpperCase().indexOf(filterString.toUpperCase()) != -1 || 
-                employee.Position.PositionName.toUpperCase().indexOf(filterString.toUpperCase()) != -1)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+// populate	the	"employeesModel" array,	
+// by issuing an AJAX call to your Teams API
+function initializeTeams()
+{
+    console.log("main.js:::initializeTeams()");
+
+    return new Promise( function(resolve, reject) {
+        // request data to REST server with jQuery-ajax
+        $.ajax({
+            // according to data-query type, request data to REST
+            url: urlString + "teams-raw",
+            method: "GET",
+            contentType: "application/json"
+        })
+        .done(function(data) {
+            // Assign the results to the "employeesModel" variable, 
+            // causing it to be populated with all 300 Employees returned from your API
+            // console.log("main.js:::initializeTeams():::" + data.length);            
+            viewModel.teams = ko.mapping.fromJS(data);
+            console.log("main.js:::initializeTeams():::" + viewModel.teams().length);
+            resolve();
+
+
+            // Invoke the "refreshEmployeeRows" function (see below for specification) 
+            // with the employeesModel as the parameter
+            // refreshEmployeeRows(employeesModel);
+        })
+        .fail(function(err){
+            // If the AJAX call fails, Invoke the "showGenericModal" 
+            // function (see below for specification) with "Error" 
+            // as the "title" parameter and an appropriate error message
+            console.log("error: " + err.statusText);                
+            reject("Error loading the team data.");
         });
-        return filterData;
-    }
+    });
+}
 
-    // search the global "employeesModel"	
-    // array for an Employee whose _id matches the local "id"
-    function getEmployeeModelById(id)
-    {
-        console.log("main.js:::getEmployeeModelById()");            
-        let findIdx = _.findIndex(employeesModel, function(employee) { 
-            return employee._id === id; 
+// populate	the	"employeesModel" array,	
+// by issuing an AJAX call to your Teams API
+function initializeEmployees()
+{
+    console.log("main.js:::initializeEmployees()");
+    return new Promise( function(resolve, reject) {
+        // request data to REST server with jQuery-ajax
+        $.ajax({
+            // according to data-query type, request data to REST
+            url: urlString + "employees",
+            method: "GET",
+            contentType: "application/json"
+        })
+        .done(function(data) {
+            // Assign the results to the "employeesModel" variable, 
+            // causing it to be populated with all 300 Employees returned from your API
+            viewModel.employees = ko.mapping.fromJS(data);
+            console.log("main.js:::initializeTeams():::" + viewModel.employees().length);
+            resolve();
+        })
+        .fail(function(err){
+            // If the AJAX call fails, Invoke the "showGenericModal" 
+            // function (see below for specification) with "Error" 
+            // as the "title" parameter and an appropriate error message
+            console.log("error: " + err.statusText);                
+            reject("Error loading the team data.");
         });
+    });
+}
 
-        // If the employee is found, a deep copy of the employee object is returned
-        // otherwise, null
-        if (findIdx != -1) return _.cloneDeep(employeesModel[findIdx]);
-        else null;
-    }
+// populate	the	"employeesModel" array,	
+// by issuing an AJAX call to your Teams API
+function initializeProjects()
+{
+    console.log("main.js:::initializeProjects()");
+    return new Promise( function(resolve, reject) {
+        // request data to REST server with jQuery-ajax
+        $.ajax({
+            // according to data-query type, request data to REST
+            url: urlString + "projects",
+            method: "GET",
+            contentType: "application/json"
+        })
+        .done(function(data) {
+            // Assign the results to the "employeesModel" variable, 
+            // causing it to be populated with all 300 Employees returned from your API
+            viewModel.projects = ko.mapping.fromJS(data);
+            console.log("main.js:::initializeProjects():::" + viewModel.projects().length);
+            resolve();
+        })
+        .fail(function(err){
+            // If the AJAX call fails, Invoke the "showGenericModal" 
+            // function (see below for specification) with "Error" 
+            // as the "title" parameter and an appropriate error message
+            console.log("error: " + err.statusText);                
+            reject("Error loading the team data.");
+        });
+    });
+}
 
-    // to fetch the data and populate our employees table
-    initializeEmployeesModel();
-    
-    // wiring up the "keyup" event for the Search Field ("employee-search") that performs
-    $("#employee-search").on("keyup", function() {
+// send the updated team data to the correct route in the API
+function saveTeam(this)
+{
+    // Set the value of this to a local variable
+    let currentTeam = this._id();
 
-        console.log("main.js:::$(#employee-search).on(keyup, function() {");
-        let searchText = $("#employee-search").val(); // using jQuery utility
-        // return a filtered array, and invokes the refreshEmployeeRows()
-        // show only "filtered" rows to the user
-        refreshEmployeeRows(getFilteredEmployeesModel(searchText));
+    let modifyProjects = _.filter(this.Projects, function() { return this.Projects.TeamName === currentTeam; } );
+
+
+    $.ajax({
+        url: urlString + "team/" + currentTeam,
+        type: "PUT",
+        data: JSON.stringify(plainEmployee),
+        contentType: "application/json"
+    })
+    .done(function (data) {
+        resolve();
+    })
+    .fail(function (err) {
+        employee.isDirty = true; // reinstate the "isDirty" flag, if we couldn't save the employee
+        reject("Unable to update Employees");
     });
 
-    // wiring up the "click" event for every single (current and future) 
-    // element with the class "bodyrow"
-    $(".bootstrap-header-table").on("click", ".body-row", function() {
+}
 
-        console.log("main.js:::$(.bootstrap-header-table).on(click, .body-row, function() {");
-        let $empId = $(this).attr("data-id");
-        let clickedEmpoyee = getEmployeeModelById($empId);
+$(document).ready(function(){ // start jQuery
 
-        let hireDateStr = moment(clickedEmpoyee.hireDate).format("LL");            
-        clickedEmpoyee.HireDate = hireDateStr;
+    initializeTeams()
+    .then(initializeEmployees)
+    .then(initializeProjects)
+    .then(function() {
+        ko.applyBindings(viewModel);
 
-        let modalTemplate = _.template(
-            '<strong>Address:</strong> <%- employee.AddressStreet %> <%- employee.AddressCity %> <%- employee.AddressState %> <%- employee.AddressZip %><br>' +
-            '<strong>Phone Number:</strong> <%-employee.PhoneNum %><br>' + 
-            '<strong>Hire Date:</strong> <%- employee.HireDate %>');
-        
-        // show employee detail 
-        showGenericModal(
-            clickedEmpoyee.FirstName + " " + clickedEmpoyee.LastName, 
-            modalTemplate({ 'employee':clickedEmpoyee })
-        );
+        $("select.multiple").multipleSelect({ filter: true });
+        $("select.single").multipleSelect({ single: true, filter: true });
+    })
+    .catch(function(err) {
+        console.log("error: " + err);
+        showGenericModal('Error', err);
     });
 });
