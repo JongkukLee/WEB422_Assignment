@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import Moment from 'react-moment';
+import moment from 'moment';
 import MainContainer from './MainContainer.js'
 
 class Projects extends Component {
@@ -41,15 +41,17 @@ class Projects extends Component {
                     </thead>
                     <tbody>
                         {this.state.projects.map((project, index) => {
-                            let date = "";
-                            if(project.ProjectEndDate == null) date = "n/a";
-                            else date = <Moment format="LL" date={project.ProjectEndDate} />
+                            let endDate = "";
+                            if(project.ProjectEndDate == null) endDate = "n/a";
+                            else endDate = moment(project.ProjectEndDate).utc().format('LL');
+
+                            let startDate = moment(project.ProjectStartDate).utc().format('LL');
                             return (
                                 <tr>
                                     <td>{project.ProjectName}</td>
                                     <td>{project.ProjectDescription}</td>
-                                    <td><Moment format="LL" date={project.ProjectStartDate} /></td>
-                                    <td>{date}</td>
+                                    <td>{startDate}</td>
+                                    <td>{endDate}</td>
                                 </tr>
                             )
                         })}

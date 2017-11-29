@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import Moment from 'react-moment';
+import moment from 'moment';
 import MainContainer from './MainContainer.js'
 
 class Employees extends Component {
@@ -46,7 +46,7 @@ class Employees extends Component {
                                     <td>{employee.FirstName} {employee.LastName} - {employee.Position.PositionName}</td>
                                     <td>{employee.AddressStreet} {employee.AddressState} {employee.AddressCity} {employee.AddressZip}</td>
                                     <td>{employee.PhoneNum} ext {employee.Extension}</td>
-                                    <td><Moment format="LL" date={employee.HireDate} /></td>
+                                    <td>{moment(employee.HireDate).utc().format('LL')}</td>
                                     <td>$ {employee.SalaryBonus}</td>
                                 </tr>
                             )

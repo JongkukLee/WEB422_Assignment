@@ -4,7 +4,7 @@
 * assignment has been copied manually or electronically from any other source (including web sites) or  
 * distributed to other students. 
 *  
-*	Name: _Jongkuk Lee____________ Student ID: _127730158____ Date: _2017-10-22_____ 
+*	Name: _Jongkuk Lee____________ Student ID: _127730158____ Date: _2017-11-24_____ 
 * 
 ********************************************************************************/  
 import React from 'react';

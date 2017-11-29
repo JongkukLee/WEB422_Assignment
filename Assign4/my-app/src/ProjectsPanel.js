@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Moment from 'react-moment';
+import moment from 'moment';
 import axios from 'axios';
 import {Link} from 'react-router-dom';
 
@@ -41,10 +41,11 @@ class ProjectsPanel extends Component {
                         <table className="table table-striped table-bordered">
                         <tbody>
                             {this.state.projects.map((project, index) => {
+                                let activeDate = moment().diff(moment(project.ProjectStartDate),'days');
                                 return (
                                     <tr>
                                         <td>{project.ProjectName}</td>
-                                        <td>Active <Moment toNow>{project.ProjectStartDate}</Moment></td>
+                                        <td>Active {activeDate} days</td>
                                     </tr>
                                 )
                             })}
